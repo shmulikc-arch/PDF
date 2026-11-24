@@ -40,10 +40,7 @@
       var res = detectPage(pdfjsLib.OPS, await page.getOperatorList({ annotationMode: pdfjsLib.AnnotationMode.DISABLE }), await page.getTextContent(), vp, await page.getAnnotations(), i - 1);
       if (res.rtl) rtlVotes++; else rtlVotes--;
       res.fields.forEach(function (f) { fields.push(f); });
-      var cv = document.createElement("canvas"), vp2 = page.getViewport({ scale: SCALE });
-      cv.width = Math.ceil(vp2.width); cv.height = Math.ceil(vp2.height);
-      await page.render({ canvasContext: cv.getContext("2d"), viewport: vp2 }).promise;
-      canvases.push(cv);
+      canvases.push(null);
     }
     state = { name: file.name, bytes: buf, fields: fields, answers: {}, viewports: viewports, canvases: canvases, rtl: rtlVotes >= 0 };
     prepare();
@@ -205,7 +202,6 @@
           q.appendChild(choiceInput(f));
         } else {
           q.appendChild(el("div", "lbl", esc(lab)));
-          q.appendChild(snippet(f));
           if (f.type === "choice") q.appendChild(choiceInput(f));
           else q.appendChild(textInput(f.key, f.type === "box" && !f.inTable));
         }
